@@ -17,16 +17,14 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch(
-      "https://newsapi.org/v2/top-headlines?country=us&apiKey=019e472c1fe440f999fe3a6a771a3b3d"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setArticles(data.articles || []);
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  fetch("/api/news")
+    .then((res) => res.json())
+    .then((data) => {
+      setArticles(data.articles || []);
+      setLoading(false);
+    });
+}, []);
 
   // Dynamically get unique source names for categories
   const sourceCategories = useMemo(() => {
