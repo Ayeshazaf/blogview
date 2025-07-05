@@ -11,37 +11,54 @@ type Article = {
   url: string;
 };
 
+const CATEGORIES = [
+  "Technology",
+  "Lifestyle",
+  "Development",
+  "Photography",
+  "Health",
+  "Travel",
+];
+
+function getCategory(article: Article): string | null {
+  const text = `${article.title} ${article.description || ""}`.toLowerCase();
+  if (text.match(/tech|ai|software|computer|gadget|robot|digital|app|device|internet/)) return "Technology";
+  if (text.match(/lifestyle|life|home|family|fashion|food|culture|living|style/)) return "Lifestyle";
+  if (text.match(/develop|web|frontend|backend|programming|code|javascript|react|next\.js|api/)) return "Development";
+  if (text.match(/photo|camera|photography|dslr|lens|image|shoot/)) return "Photography";
+  if (text.match(/health|diet|nutrition|exercise|fitness|wellness|medicine|doctor/)) return "Health";
+  if (text.match(/travel|trip|tour|vacation|journey|explore|destination|hotel|flight/)) return "Travel";
+  return null;
+}
+
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-useEffect(() => {
+  useEffect(() => {
   fetch("/api/news")
     .then((res) => res.json())
     .then((data) => {
       setArticles(data.articles || []);
       setLoading(false);
+    })
+    .catch(() => {
+      setArticles([]);
+      setLoading(false);
     });
 }, []);
 
-  // Dynamically get unique source names for categories
-  const sourceCategories = useMemo(() => {
-    const sources = Array.from(
-      new Set(articles.map((a) => a.source?.name).filter(Boolean))
-    );
-    return sources;
-  }, [articles]);
-
-  // Filter articles by search and selected source (category)
+  // Filter articles by search and selected category
   const filteredArticles = useMemo(() => {
     return articles.filter((article) => {
       const matchesSearch =
+        search.trim() === "" ||
         article.title.toLowerCase().includes(search.toLowerCase()) ||
         (article.description && article.description.toLowerCase().includes(search.toLowerCase()));
       const matchesCategory = selectedCategory
-        ? article.source?.name === selectedCategory
+        ? getCategory(article) === selectedCategory
         : true;
       return matchesSearch && matchesCategory;
     });
@@ -51,7 +68,7 @@ useEffect(() => {
     <section className="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
       {/* Blog posts */}
       <div className="w-full md:w-2/3">
-        <h1 className="text-2xl md:text-3xl font-bold text-center md:text-left mb-8">
+        <h1 className="text-2xl text-left md:text-3xl font-bold text-center mb-8">
           Latest Blog Posts
         </h1>
         <div className="grid sm:grid-cols-2 gap-6">
@@ -78,7 +95,7 @@ useEffect(() => {
                 )}
                 <div className="p-4 flex-1 flex flex-col">
                   <span className="inline-block mb-2 text-xs font-medium px-2 py-1 rounded bg-blue-50 text-blue-600 w-fit">
-                    {article.source?.name}
+                    {getCategory(article) || "Other"}
                   </span>
                   <h2 className="font-semibold text-lg mb-1">{article.title}</h2>
                   <p className="text-sm text-gray-500 mb-4 flex-1">{article.description}</p>
@@ -126,9 +143,9 @@ useEffect(() => {
           </div>
           {/* Categories */}
           <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="font-semibold mb-4 text-gray-900 text-base">Sources</h2>
+            <h2 className="font-semibold mb-4 text-gray-900 text-base">Categories</h2>
             <ul className="space-y-2">
-              {sourceCategories.map((cat) => (
+              {CATEGORIES.map((cat) => (
                 <li key={cat}>
                   <button
                     className={`text-left w-full px-0 py-1 rounded transition ${
