@@ -71,6 +71,7 @@ export default function Home() {
         <h1 className="text-2xl text-left md:text-3xl font-bold text-center mb-8">
           Latest Blog Posts
         </h1>
+        
         <div className="grid sm:grid-cols-2 gap-6">
           {loading ? (
             <div className="col-span-2 text-center text-gray-400">Loading...</div>
@@ -116,55 +117,59 @@ export default function Home() {
           )}
         </div>
       </div>
-      {/* Sidebar */}
-      <div className="w-full md:w-1/3 flex flex-col gap-6">
-        <div className="sticky top-24 flex flex-col gap-6">
-          {/* Search Bar */}
-          <div className="bg-white rounded-xl shadow p-4 mt-15">
-            <div className="flex items-center rounded px-2 py-1">
-              <svg
-                className="w-5 h-5 text-gray-400 mr-2"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <circle cx={11} cy={11} r={8} />
-                <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search articles..."
-                className="w-full outline-none bg-transparent text-sm"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-          </div>
-          {/* Categories */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="font-semibold mb-4 text-gray-900 text-base">Categories</h2>
-            <ul className="space-y-2">
-              {CATEGORIES.map((cat) => (
-                <li key={cat}>
-                  <button
-                    className={`text-left w-full px-0 py-1 rounded transition ${
-                      selectedCategory === cat
-                        ? "font-semibold text-blue-600"
-                        : "text-gray-700 hover:text-blue-600"
-                    }`}
-                    onClick={() =>
-                      setSelectedCategory(selectedCategory === cat ? null : cat)
-                    }
-                  >
-                    {cat}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+      {/* // Replace the sidebar section with this: */}
+
+{/* Sidebar */}
+<div className="w-full md:w-1/3 flex flex-col gap-6 sticky top-24">
+  <div className="sticky top-24 flex flex-col gap-6 mt-15">
+    {/* Search Bar - show above posts on small screens, keep here for md+ */}
+    <div className="hidden md:block mb-6">
+      <div className="bg-white rounded-xl shadow p-4">
+        <div className="flex items-center rounded px-2 py-1">
+          <svg
+            className="w-5 h-5 text-gray-400 mr-2"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <circle cx={11} cy={11} r={8} />
+            <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search articles..."
+            className="w-full outline-none bg-transparent text-sm"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
       </div>
+    </div>
+    {/* Categories only on md+ screens */}
+    <div className="hidden md:block bg-white rounded-xl shadow p-6">
+      <h2 className="font-semibold mb-4 text-gray-900 text-base">Categories</h2>
+      <ul className="space-y-2">
+        {CATEGORIES.map((cat) => (
+          <li key={cat}>
+            <button
+              className={`text-left w-full px-0 py-1 rounded transition ${
+                selectedCategory === cat
+                  ? "font-semibold text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              }`}
+              onClick={() =>
+                setSelectedCategory(selectedCategory === cat ? null : cat)
+              }
+            >
+              {cat}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>
     </section>
   );
 }
